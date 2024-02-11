@@ -2,6 +2,7 @@
 
 #include "idt.h"
 #include "gdt.h"
+#include "pic.h"
 
 // idt
 __attribute__((aligned(0x10)))
@@ -22,6 +23,10 @@ void idt_init() {
     // load idt
     __asm__ volatile ("lidt (%0)" : : "r" (&idtr));
     __asm__ volatile ("sti");
+
+
+    // initialize 8259 pic
+    pic_init();
 }
 
 // set an idt entry
