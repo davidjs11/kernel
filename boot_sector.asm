@@ -12,7 +12,7 @@ start:
 
     ; read disk
     mov bx, KERNEL_OFFSET
-    mov dh, 0x02
+    mov dh, 0x04
     call read_disk
 
     ; switch to 32 bits

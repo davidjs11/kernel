@@ -36,4 +36,5 @@ void idt_set_entry(uint8_t index, void *isr, uint8_t flags);
 // temporal exception handler
 void tmp_exception_handler();
 
+
 #endif // IDT_H

@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 
+
 /* INPUT */
 static inline uint8_t inb(uint16_t port) {
     uint8_t res;

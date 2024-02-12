@@ -4,6 +4,7 @@
 #define VGA_H
 
 
+/* MACROS */
 #define VGA_ADDRESS_SPACE       0xB8000
 #define VGA_COLUMN_COUNT        80
 #define VGA_ROW_COUNT           25
@@ -24,7 +25,10 @@
 #define VGA_COLOR_YELLOW        0xE
 #define VGA_COLOR_BRIGHT_WHITE  0xF
 
+
+/* FUNCTIONS */
 void vga_clear();
-void print_vga(const char *str, const char color);
+void vga_print(const char *str, const char color);
+
 
 #endif // VGA_H

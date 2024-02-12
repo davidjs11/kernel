@@ -9,7 +9,7 @@ void vga_clear() {
 }
 
 // print a string into the vga text buffer
-void print_vga(const char *str, const char color) {
+void vga_print(const char *str, const char color) {
     volatile char *video = (volatile char *) 0xB8000;
     while(*str) {
         *video++ = *str++;
