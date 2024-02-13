@@ -9,6 +9,7 @@
 // idt
 __attribute__((aligned(0x10)))
 static idt_entry_t idt[256];
+extern void (*isr_stub_table[ISR_NUMBER])(regs_t regs);
 
 // initialize idt
 void idt_init() {
@@ -21,8 +22,10 @@ void idt_init() {
     idtr.limit = (uint16_t) sizeof(idt_entry_t)*IDT_MAX_DESCRIPTORS-1;
 
     // set entries
-    for (uint8_t i=0; i<ISR_NUMBER; i++)
-        idt_set_entry(i, isr_stub_table[i], 0x8E);
+    // for (uint8_t i=0; i<ISR_NUMBER; i++)
+    //     idt_set_entry(i, isr_stub_table[i], 0x8E);
+
+    isr_init();
 
     // load idt
     __asm__ volatile ("lidt (%0)" : : "r" (&idtr));

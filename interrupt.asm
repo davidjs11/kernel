@@ -102,3 +102,22 @@ common_isr:
     add esp, 8      ; clean pushed error code and ISR index
     sti             ; set interrupt flag
     iret            ; return from interrupt
+
+
+; stub table
+global isr_stub_table
+isr_stub_table:
+%assign i 0             ; assign i=0
+%rep    48              ; i<32
+    dd isr_stub_%+i     ; declare isr_stub_i
+%assign i i+1           ; i++
+%endrep
+
+; handlers table
+; global handlers
+; handlers:
+; %assign i 0             ; assign i=0
+; %rep    48              ; i<48
+;     dd 0x00000000       ; declare handler
+; %assign i i+1           ; i++
+; %endrep

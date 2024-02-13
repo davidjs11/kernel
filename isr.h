@@ -14,12 +14,17 @@ typedef struct {
     uint32_t eip, cs, eflags, useresp, ss;           // pushed by cpu
 } regs_t;
 
-static void (*isr_stub_table[ISR_NUMBER])(regs_t regs);
+typedef void (*isr_t)(regs_t);
 
 // install an isr handler
 void isr_install(uint32_t i, void (*handler)(regs_t));
 
 // init isr
 void isr_init();
+
+void isr_install(uint32_t index, void (*handler)(regs_t));
+
+void exception_handler(regs_t regs);
+void irq_handler(regs_t regs);
 
 #endif // ISR_H
