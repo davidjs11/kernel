@@ -7,8 +7,7 @@
 void wait();
 
 void main() {
+    idt_init();
     vga_clear();
     vga_print("kernel.c loaded successfully", VGA_COLOR_RED);
-
-    idt_init();
 }

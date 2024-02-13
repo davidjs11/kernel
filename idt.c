@@ -3,16 +3,16 @@
 #include "idt.h"
 #include "gdt.h"
 #include "pic.h"
+#include "isr.h"
 #include "vga.h"
 
 // idt
 __attribute__((aligned(0x10)))
 static idt_entry_t idt[256];
-extern void* isr_stub_table[];
 
 // initialize idt
 void idt_init() {
-    // initialize 8259 pic
+    // initialize 8259 pic (master at 0x20 and slave at 0x28)
     pic_init(0x20, 0x28);
 
     // setup idt register
@@ -21,7 +21,7 @@ void idt_init() {
     idtr.limit = (uint16_t) sizeof(idt_entry_t)*IDT_MAX_DESCRIPTORS-1;
 
     // set entries
-    for (uint8_t i=0; i<48; i++)
+    for (uint8_t i=0; i<ISR_NUMBER; i++)
         idt_set_entry(i, isr_stub_table[i], 0x8E);
 
     // load idt

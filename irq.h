@@ -1,0 +1,9 @@
+/// irq.h ///////////////////////////////////////////////////////////
+
+#ifndef IRQ_H
+#define IRQ_H
+
+void irq_init();
+void irq_install();
+
+#endif // IRQ_H
