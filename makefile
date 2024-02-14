@@ -34,7 +34,8 @@ os_image: boot_sector.bin kernel.bin
 	@cat boot_sector.bin kernel.bin > os_image.bin
 
 run: os_image
-	@qemu-system-i386 -fda os_image.bin
+	@echo "[+] launching..."
+	@qemu-system-i386 -drive file=os_image.bin,index=0,if=floppy,format=raw -m 1024
 
 clean:
 	@echo "[-] cleaning..."

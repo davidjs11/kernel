@@ -3,7 +3,7 @@
 #ifndef ISR_H
 #define ISR_H
 
-#include "utils.h"
+#include "util.h"
 
 #define ISR_NUMBER 48
 

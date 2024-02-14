@@ -4,7 +4,7 @@
 #define IRQ_H
 
 #include <stdint.h>
-#include "ports.h"
+#include "util.h"
 #include "isr.h"
 
 /* MACROS */

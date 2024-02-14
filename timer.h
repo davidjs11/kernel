@@ -3,7 +3,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "utils.h"
+#include "util.h"
 
 #define PIT_HZ      1193180
 #define PIT_A       0x40
@@ -12,7 +12,8 @@
 #define PIT_CONTROL 0x43
 #define PIT_MASK    0xFF
 #define PIT_SET     0x36
-#define PIT_CHOSEN_DIVISOR 1193180
+// #define PIT_CHOSEN_DIVISOR 1193180
+#define PIT_CHOSEN_DIVISOR 363
 
 // get current ticks from timer
 uint32_t timer_get();

@@ -15,6 +15,12 @@ start:
     mov dh, 0x09
     call read_disk
 
+    ; disable cursor
+    xor ah, ah
+    inc ah
+    mov ch, 0x3F
+    int 0x10
+
     ; switch to 32 bits
     call switch_protected_mode
 

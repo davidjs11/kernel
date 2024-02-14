@@ -69,5 +69,8 @@ void irq_clear_mask(uint8_t irq) {
 // install interrupt handler given irq index
 extern isr_t handlers[];
 void irq_install(size_t i, isr_t handler) {
+    CLI();
     handlers[i+0x20] = handler;
+    irq_clear_mask(i);
+    STI();
 }

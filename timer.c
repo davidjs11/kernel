@@ -1,7 +1,6 @@
 /// timer.c /////////////////////////////////////////////////////////
 
 #include "timer.h"
-#include "vga.h"        // TEMPORAL
 #include "isr.h"
 #include "irq.h"
 

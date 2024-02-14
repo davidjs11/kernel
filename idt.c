@@ -22,7 +22,7 @@ void idt_init() {
     idtr.limit = (uint16_t) sizeof(idt_entry_t)*IDT_MAX_DESCRIPTORS-1;
 
     // set entries
-    for (uint8_t i=0; i<ISR_NUMBER; i++)
+    for (size_t i=0; i<ISR_NUMBER; i++)
         idt_set_entry(i, isr_stub_table[i], 0x8E);
 
     isr_init();
