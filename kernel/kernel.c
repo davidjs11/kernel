@@ -7,13 +7,10 @@
 
 void wait();
 
-char buffer[VGA_ROW_COUNT*VGA_COLUMN_COUNT];
 void main() {
-    for(size_t i=0; i<sizeof(buffer); i++) buffer[i] = 'ñ';
     vga_clear();
     idt_init();
     timer_init();
-    while(timer_get() < 255) vga_print(buffer, timer_get() & 0xFF);
-    vga_print("adiooooo", VGA_COLOR_RED);
+    vga_print("kernel.c loaded!!!", VGA_COLOR_RED);
     HLT();
 }
