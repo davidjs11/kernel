@@ -30,5 +30,4 @@
 void vga_clear();
 void vga_print(const char *str, const char color);
 
-
 #endif // VGA_H

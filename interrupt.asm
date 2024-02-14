@@ -9,19 +9,17 @@
 [global isr_stub_%1]
 isr_stub_%1:
     cli                 ; disable other interrupts
-    push $0             ; push dummy error code
-    push %1             ; push error code
-    call common_isr     ; call common handler
-    iret
+    push %1             ; push index
+    jmp common_isr      ; call common handler
 %endmacro
 
 %macro isr_no_err_stub 1
 [global isr_stub_%1]
 isr_stub_%1:
     cli                 ; disable other interrupts
-    push %1             ; push error code
-    call common_isr     ; call common handler
-    iret
+    push 33             ; push dummy error code
+    push %1             ; push index
+    jmp common_isr      ; call common handler
 %endmacro
 
 
@@ -43,7 +41,7 @@ isr_err_stub    13      ; general protection fault
 isr_err_stub    14      ; page fault
 isr_no_err_stub 15      ; unknown interrupt
 isr_no_err_stub 16      ; coprocessor fault
-isr_no_err_stub 17      ; aligment check exception (486)
+isr_err_stub    17      ; aligment check exception (486)
 isr_no_err_stub 18      ; machine segment exception (pentium)
 isr_no_err_stub 19      ; reserved
 isr_no_err_stub 20      ; reserved
@@ -104,7 +102,7 @@ common_isr:
     iret            ; return from interrupt
 
 
-; stub table
+; global stub table
 global isr_stub_table
 isr_stub_table:
 %assign i 0             ; assign i=0
@@ -112,12 +110,3 @@ isr_stub_table:
     dd isr_stub_%+i     ; declare isr_stub_i
 %assign i i+1           ; i++
 %endrep
-
-; handlers table
-; global handlers
-; handlers:
-; %assign i 0             ; assign i=0
-; %rep    48              ; i<48
-;     dd 0x00000000       ; declare handler
-; %assign i i+1           ; i++
-; %endrep
