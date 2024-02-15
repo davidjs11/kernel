@@ -37,6 +37,5 @@ void isr_install(size_t i, isr_t handler) {
 // TEMPORAL
 // exception handler
 void exception_handler(regs_t regs) {
-    vga_print("kernel panic o algo asi", VGA_COLOR_RED);
-    HLT();
+    // HLT();
 }

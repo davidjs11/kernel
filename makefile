@@ -33,6 +33,7 @@ OS_IMAGE 	= os_image.bin
 
 LD			= i386-elf-ld
 CC			= i386-elf-gcc
+AS			= nasm
 CC_FLAGS	= -nostdlib -ffreestanding\
 			  $(patsubst %, -I%, $(DIRS))
 
@@ -44,11 +45,11 @@ folders:
 
 $(BUILD)/boot_sector.bin: $(BOOT)/boot_sector.asm
 	@echo "compiling...             $@"
-	@nasm -f bin $(BOOT)/boot_sector.asm -o $(BUILD)/boot_sector.bin
+	@$(AS) -f bin $(BOOT)/boot_sector.asm -o $(BUILD)/boot_sector.bin
 
 $(BUILD)/kernel.bin: $(OBJ_FILES)
 	@echo "linking...               $@"
-	@nasm -f elf $(KERNEL)/kernel_entry.asm -o $(KERNEL)/kernel_entry.o
+	@$(AS) -f elf $(KERNEL)/kernel_entry.asm -o $(KERNEL)/kernel_entry.o
 	@$(LD) -o $(BUILD)/kernel.bin -Ttext 0x1000 $(KERNEL)/kernel_entry.o $^ --oformat binary 
 
 %.o: %.asm
@@ -68,4 +69,4 @@ run: os_image
 
 clean:
 	@echo "[-] cleaning..."
-	@rm -rf $(OBJ_FILES) build $(OS_IMAGE) 
+	@rm -rf */*.o build $(OS_IMAGE) 
