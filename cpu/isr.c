@@ -5,9 +5,45 @@
 #include "idt.h"
 #include "isr.h"
 #include "vga.h"
+#include "system.h"
 
 isr_t handlers[ISR_NUMBER];
 extern isr_t isr_stub_table[];
+
+const char *exception_text[32] = {
+    "DIVISION BY 0",
+    "DEBUG",
+    "NON MASKABLE INTERRUPT",
+    "BREAKPOINT",
+    "INTO DETECTED OVERFLOW",
+    "OUT OF BOUNDS",
+    "INVALID OPCODE",
+    "NO COPROCESSOR",
+    "DOUBLE FAULT",
+    "COPROCESSOR SEGMENT OVERRUN",
+    "BAD TSS",
+    "SEGMENT NOT PRESENT",
+    "STACK FAULT",
+    "GENERAL PROTECTION FAULT",
+    "PAGE FAULT",
+    "UNKNOWN INTERRUPT",
+    "COPROCESSOR FAULT",
+    "ALIGMENT CHECK EXCEPTION (486)",
+    "MACHINE SEGMENT EXCEPTION (PENTIUM)",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED",
+    "RESERVED"
+};
 
 // initialize isr stub and handler arrays
 void isr_init() {
@@ -37,5 +73,5 @@ void isr_install(size_t i, isr_t handler) {
 // TEMPORAL
 // exception handler
 void exception_handler(regs_t regs) {
-    // HLT();
+    panic(exception_text[regs.int_no]);
 }

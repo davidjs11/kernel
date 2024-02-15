@@ -7,18 +7,17 @@
 #include "timer.h"
 
 void main() {
+    // init things
     idt_init();
     timer_init();
 
+    // init vga
     vga_clear(VGA_BLACK);
     vga_print("kernel.c loaded", VGA_WHITE);
-              
 
+    // wait
     while(timer_get() < 1000);
 
-    vga_clear(VGA_BLUE);
-    vga_print_at("kernel panic",
-                VGA_TEXT_COLOR(VGA_BLUE, VGA_BRIGHT_WHITE),
-                 VGA_ROWS/8, VGA_COLS/2-6);
-    // panic();
+    // a wild exception appeared
+    int a = 10/0;
 }

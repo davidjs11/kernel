@@ -11,7 +11,7 @@ void vga_clear(uint8_t color) {
 }
 
 // print a string into the vga text buffer
-void vga_print(char *str, uint8_t color) {
+void vga_print(const char *str, uint8_t color) {
     volatile char *video = (volatile char *) 0xB8000;
     while(*str) {
         *video++ = *str++;
@@ -20,8 +20,8 @@ void vga_print(char *str, uint8_t color) {
 }
 
 // print a string at a given position
-void vga_print_at(char *str, uint8_t color, uint8_t row, uint8_t col) {
-    char *video = (char *) 0xB8000 + 2*(col+row*VGA_COLS);
+void vga_print_at(const char *str, uint8_t color, uint8_t i, uint8_t j) {
+    char *video = (char *) 0xB8000 + 2*(j+i*VGA_COLS);
 
     while(*str) {
         *video++ = *str++;

@@ -5,6 +5,7 @@
 
 #include "util.h"
 
-void panic();
+// kernel panic
+void panic(const char *err);
 
 #endif // SYSTEM_H

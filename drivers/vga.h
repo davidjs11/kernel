@@ -33,9 +33,9 @@
 void vga_clear(uint8_t color);
 
 // print text in the screen
-void vga_print(char *str, uint8_t color);
+void vga_print(const char *str, uint8_t color);
 
 // print text at a given position
-void vga_print_at(char *str, uint8_t color, uint8_t row, uint8_t col);
+void vga_print_at(const char *str, uint8_t color, uint8_t i, uint8_t j);
 
 #endif // VGA_H
