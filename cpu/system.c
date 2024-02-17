@@ -6,9 +6,9 @@
 void panic(const char *err) {
     // print message
     vga_clear(VGA_BLUE);
-    vga_print_at("kernel panic",
+    vga_print_at("oh meu deus, panico do kernel!!!",
                 VGA_TEXT_COLOR(VGA_BLUE, VGA_BRIGHT_WHITE),
-                 VGA_ROWS/8, VGA_COLS/2-6);
+                 VGA_ROWS/8, VGA_COLS/2-16);
     vga_print_at((char*) err,
                  VGA_TEXT_COLOR(VGA_BRIGHT_WHITE, VGA_BLUE),
                  VGA_ROWS/5, VGA_COLS/2/*-strlen(err)/2*/-7);

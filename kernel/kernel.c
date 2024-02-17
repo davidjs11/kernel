@@ -5,6 +5,7 @@
 #include "system.h"
 #include "util.h"
 #include "timer.h"
+#include "string.h"
 
 void main() {
     // init things
@@ -16,7 +17,7 @@ void main() {
     vga_print("kernel.c loaded", VGA_WHITE);
 
     // wait
-    while(timer_get() < 1000);
+    while(timer_get() < 1500);
 
     // a wild exception appeared
     int a = 10/0;

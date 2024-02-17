@@ -3,9 +3,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <stddef.h>
 #include <stdint.h>
-typedef uint32_t size_t;
-
 
 /* CPU FUNCTIONS */
 #define CLI(){__asm__("cli");}
