@@ -17,8 +17,8 @@ void main() {
     vga_print("kernel.c loaded", VGA_WHITE);
 
     // wait
-    while(timer_get() < 1500);
+    while(timer_get() < 500);
 
     // a wild exception appeared
-    int a = 10/0;
+    __asm__("int $0x00");
 }
