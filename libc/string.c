@@ -44,3 +44,33 @@ int strcmp(const char *str1, const char *str2) {
     return str1[n] - str2[n];
 }
 
+/* temporal */
+char *itoa(int n, char *buffer, uint8_t base) {
+    const char *digits = "0123456789ABCDEF";
+    size_t i = 0;
+    uint8_t sign;
+
+    // check if number is negative
+    if (n < 0) {
+        sign = 1;
+        n = -n;
+    }
+
+    // get characters from number
+    while(n) {
+        buffer[i++] = digits[n%base];
+        n /= base;
+    }
+
+    // if signed, add '-'
+    if(sign) buffer[i] = '-';
+
+    // reverse digits
+    for(size_t j=0; j<i; j++) {
+        char tmp = buffer[i];
+        buffer[i--] = buffer[j];
+        buffer[j] = tmp;
+    }
+
+    return buffer;
+}

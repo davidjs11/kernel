@@ -14,7 +14,8 @@ void main() {
 
     // init vga
     vga_clear(VGA_BLACK);
-    vga_print("kernel.c loaded", VGA_WHITE);
+    char buffer[256] = {0};
+    vga_print(itoa(-14873, buffer, 10), VGA_WHITE);
 
     // wait
     while(timer_get() < 500);
