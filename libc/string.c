@@ -34,7 +34,15 @@ char *strncpy(char *dest, const char *src, size_t n) {
         dest[i] = src[i];
         i++;
     }
-    while(i < n) dest[i++] = 0x00;
+    while(i < n) dest[i++] = '\0';
+    return dest;
+}
+
+char *strcat(char *dest, const char *src) {
+    size_t i = 0, j = 0;
+    while(dest[i] != '\0') i++;
+    while(src[j] != '\0') dest[i++] = src[j++];
+    dest[i] = '\0';
     return dest;
 }
 
@@ -45,32 +53,29 @@ int strcmp(const char *str1, const char *str2) {
 }
 
 /* temporal */
-char *itoa(int n, char *buffer, uint8_t base) {
+char *itoa(uint32_t n, char *buffer, uint8_t base) {
     const char *digits = "0123456789ABCDEF";
     size_t i = 0;
-    uint8_t sign;
-
-    // check if number is negative
-    if (n < 0) {
-        sign = 1;
-        n = -n;
-    }
 
     // get characters from number
     while(n) {
         buffer[i++] = digits[n%base];
         n /= base;
     }
-
-    // if signed, add '-'
-    if(sign) buffer[i] = '-';
+    
+    // if base = 16 -> fill with 0s
+    if (base == 16) {
+        while(i < 8) buffer[i++] = '0';
+    }
 
     // reverse digits
+    i--;
     for(size_t j=0; j<i; j++) {
         char tmp = buffer[i];
         buffer[i--] = buffer[j];
         buffer[j] = tmp;
     }
+
 
     return buffer;
 }

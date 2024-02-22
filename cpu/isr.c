@@ -73,5 +73,5 @@ void isr_install(size_t i, isr_t handler) {
 // TEMPORAL
 // exception handler
 void exception_handler(regs_t regs) {
-    panic(exception_text[regs.int_no]);
+    panic(exception_text[regs.int_no], regs);
 }
