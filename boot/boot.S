@@ -1,16 +1,8 @@
-// TO-DO
-//  [x] printing routine
-//  [x] read disk
-//  [x] finish enabling a20
-//  [x] setup & load gdt
-//  [x] enable protected mode
-//  [x] jump into the kernel !!!
+/*   boot.S   */
 
 .code16
 .globl _start
-_start: call boot
-
-boot:
+_start:
     cli                     // disable interrupts for the moment
     movb %dl, boot_disk     // save boot disk number (provided by BIOS)
 
@@ -22,12 +14,17 @@ boot:
     movw $0x7C00, %sp
     movw %sp, %bp
 
+    /* set video mode to TTY */
+    xorb %ah, %ah
+    movb $0x03, %al
+    int $0x10
+
     /* init message */
     movw $msg_init, %si
     call print
 
     /* enable A20 gate */
-    movw $msg_a20, %si
+    movw $msg_a20, %si  // not the best method :-(
     call print
     inb $0x92, %al
     orb $0x02, %al
@@ -41,7 +38,6 @@ boot:
     movb boot_disk, %dl
     movw $0x1000, segment
     movw $0x1, sector_low
-
 disk_read_loop:
     movb $0x42, %ah
     int $0x13
@@ -59,7 +55,7 @@ same_segment:
     movw $msg_pm, %si
     call print
     movl %cr0, %eax
-    orl $0x01, %eax
+    or $0x01, %eax
     movl %eax, %cr0
 
     /* load GDT */
@@ -72,13 +68,14 @@ same_segment:
     movw %ax, %ss
     movl $0x2000, %esp
 
-    /* jump to the kernel */
     ljmp $0x8, $_start32
 
 /* 32-bit code */
 .code32
 _start32:
-    jmp .
+    /* jump to the kernel */
+    movl $0x10000, %eax
+    jmpl *%eax
 
 /* printing routine */
 .code16
@@ -112,6 +109,7 @@ gdt_start:
 gdt_null:       .quad 0x0000000000000000
 gdt_code:       .quad 0x00CF9A000000FFFF
 gdt_data:       .quad 0x00CF92000000FFFF
+
 gdt_pointer:    .word . - gdt_start - 1
                 .long gdt_start
 
