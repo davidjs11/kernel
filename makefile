@@ -63,17 +63,17 @@ $(BIN)/kernel.bin: $(KERNEL_OBJ)
 $(KERNEL)/obj/%.o: $(KERNEL)/%.c
 	@echo "CC - $<"
 	@mkdir -p $(KERNEL)/obj
-	@$(CC) -o $@ -c $< $(CCFLAGS)
+	@$(CC) -o $@ -c $< $(CCFLAGS) -I$(KERNEL)/include
 
 $(KERNEL)/obj/%.o: $(KERNEL)/%.S
 	@echo "AS - $<"
 	@mkdir -p $(KERNEL)/obj
-	@$(AS) -o $@ -c $< $(ASFLAGS)
+	@$(AS) -o $@ -c $< $(ASFLAGS) -I$(KERNEL)/include
 
 
 # --- boot image
 $(BOOTIMG): $(BIN_FILES)
-	@echo "creating boot image"
+	@echo "creating $(BOOTIMG)..."
 	@dd if=/dev/zero of=$(BOOTIMG) bs=512 count=4096 status=none
 	@dd if=$(BIN)/boot.bin of=$(BOOTIMG)   conv=notrunc status=none seek=0 bs=512 count=1
 	@dd if=$(BIN)/kernel.bin of=$(BOOTIMG) conv=notrunc status=none seek=1 bs=512 count=2048

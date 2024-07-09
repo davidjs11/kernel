@@ -1,7 +1,13 @@
 /*   kmain.c   */
 
+#include <vga.h>
+#include <ports.h>
+
 void kmain(void) {
-    unsigned char *videoMemory = (unsigned char *) 0xB8000;
-    *videoMemory = 'B';
-    while (1);
+    // print something
+    vga_clear();
+    vga_cursor_off();
+    vga_print("printing test.");
+
+    while (1);  // infinite looooooooooop
 }
