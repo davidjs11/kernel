@@ -2,7 +2,10 @@
 
 # --- macros
 # dirs
-BOOT	= boot
+# BOOT	= boot
+ARCH	= i386
+ARCHDIR = arch/$(ARCH)
+BOOT	= $(ARCHDIR)/boot
 KERNEL	= kernel
 BIN		= bin
 
@@ -14,14 +17,20 @@ EMU		= qemu-system-i386
 
 # flags
 ASFLAGS =
-CCFLAGS =
+CCFLAGS = -Wall -I$(KERNEL)/include -I$(ARCHDIR)/include
 LDFLAGS =
+
+# arch-dependent files
+ARCH_S_SRC		= $(wildcard $(ARCHDIR)/*.S)
+ARCH_C_SRC		= $(wildcard $(ARCHDIR)/*.c)
+ARCH_OBJ		= $(patsubst $(ARCHDIR)/%.S,$(ARCHDIR)/obj/%.o, $(ARCH_S_SRC))
+ARCH_OBJ	   += $(patsubst $(ARCHDIR)/%.c,$(ARCHDIR)/obj/%.o, $(ARCH_C_SRC))
 
 # kernel files
 KERNEL_S_SRC	= $(wildcard $(KERNEL)/*.S)
 KERNEL_C_SRC	= $(wildcard $(KERNEL)/*.c)
 KERNEL_OBJ		= $(patsubst $(KERNEL)/%.S,$(KERNEL)/obj/%.o, $(KERNEL_S_SRC))
-KERNEL_OBJ		+= $(patsubst $(KERNEL)/%.c,$(KERNEL)/obj/%.o, $(KERNEL_C_SRC))
+KERNEL_OBJ	   += $(patsubst $(KERNEL)/%.c,$(KERNEL)/obj/%.o, $(KERNEL_C_SRC))
 BOOTIMG			= sys.img
 
 # binaries
@@ -40,7 +49,7 @@ debug:
 
 clean:
 	@echo "cleaning..."
-	@rm -rf */obj $(BIN) $(BOOTIMG)
+	@rm -rf */obj **/*/obj **/**/*/obj $(BIN) $(BOOTIMG)
 
 
 # --- bootloader
@@ -55,21 +64,34 @@ $(BOOT)/obj/boot.o: $(BOOT)/boot.S
 	@$(AS) -o $@ -c $< $(ASFLAGS)
 
 
-# --- kernel
-$(BIN)/kernel.bin: $(KERNEL_OBJ)
+# --- kernel binary
+$(BIN)/kernel.bin: $(KERNEL_OBJ) $(ARCH_OBJ)
 	@echo "LD - kernel.bin"
-	@$(LD) -o $(BIN)/kernel.bin $^ -T$(KERNEL)/link.ld $(LDFLAGS)
+	@$(LD) -o $(BIN)/kernel.bin $^ -Tlink.ld $(LDFLAGS)
 
+
+# --- kernel files
 $(KERNEL)/obj/%.o: $(KERNEL)/%.c
 	@echo "CC - $<"
 	@mkdir -p $(KERNEL)/obj
-	@$(CC) -o $@ -c $< $(CCFLAGS) -I$(KERNEL)/include
+	@$(CC) -o $@ -c $< $(CCFLAGS)
 
 $(KERNEL)/obj/%.o: $(KERNEL)/%.S
 	@echo "AS - $<"
 	@mkdir -p $(KERNEL)/obj
-	@$(AS) -o $@ -c $< $(ASFLAGS) -I$(KERNEL)/include
+	@$(AS) -o $@ -c $< $(ASFLAGS)
 
+
+# --- architecture files
+$(ARCHDIR)/obj/%.o: $(ARCHDIR)/%.c
+	@echo "CC - $<"
+	@mkdir -p $(ARCHDIR)/obj
+	@$(CC) -o $@ -c $< $(CCFLAGS)
+
+$(ARCHDIR)/obj/%.o: $(ARCHDIR)/%.S
+	@echo "AS - $<"
+	@mkdir -p $(ARCHDIR)/obj
+	@$(AS) -o $@ -c $< $(ASFLAGS)
 
 # --- boot image
 $(BOOTIMG): $(BIN_FILES)

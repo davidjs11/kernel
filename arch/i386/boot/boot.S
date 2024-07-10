@@ -68,9 +68,8 @@ same_segment:
     movw %ax, %ss
     movl $0x2000, %esp
 
+    /* 32-bit code */
     ljmp $0x8, $_start32
-
-/* 32-bit code */
 .code32
 _start32:
     /* jump to the kernel */

@@ -1,7 +1,7 @@
 /*   vga.c   */
 
-#include <vga.h>
-#include <ports.h>
+#include "vga.h"
+#include "ports.h"
 
 void vga_clear() {
     char *buffer = (char *) VGA_ADDRESS;
