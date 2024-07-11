@@ -1,8 +1,5 @@
 /*   vga.h   */
 
-/* TO-DO */
-// - move cursor
-
 #ifndef VGA_H
 #define VGA_H
 
@@ -28,12 +25,5 @@
 #define VGA_ADDRESS 0xB8000
 #define VGA_ROWS 25
 #define VGA_COLS 80
-
-static inline uint8_t vga_get_color(uint8_t front, uint8_t back) {
-    return front | back << 4;
-}
-
-void vga_cursor_on();       // maybe removed soon
-void vga_cursor_off();
 
 #endif // VGA_H

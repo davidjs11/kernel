@@ -1,9 +1,10 @@
 /*   tty.c   */
 
 /* TO-DO */
-// - move vga cursor
+// - newline ??
 // - tty switch
 
+#include <ports.h>
 #include <tty.h>
 #include <vga.h>
 
@@ -31,9 +32,9 @@ void tty_init(tty_t *tty) {
     // init tty struct
     tty->row = 0;
     tty->col = 0;
-    tty->color = vga_get_color(TTY_WHITE, TTY_BLACK);
-    tty->cursor = false;
+    tty->color = TTY_WHITE | TTY_BLACK << 4;
     tty->buffer = (char *) VGA_ADDRESS; // (for the moment)
+    tty_move_cursor(tty, 0, 0);
 
     // clear vga screen
     char *buffer = (char *) VGA_ADDRESS;
@@ -41,7 +42,6 @@ void tty_init(tty_t *tty) {
         *buffer = ' ';
         buffer += 2;
     }
-    vga_cursor_off(); // disable cursor for the moment
 }
 
 size_t tty_get_rows(void) {
@@ -52,16 +52,39 @@ size_t tty_get_cols(void) {
     return VGA_COLS;
 }
 
-void tty_set_cursor(tty_t *tty, size_t row, size_t col) {
+void tty_move_cursor(tty_t *tty, size_t row, size_t col) {
+    // cursor position
     if (0 <= row && row < VGA_ROWS
-    && 0 <= col && col <= VGA_COLS) {
+    &&  0 <= col && col <= VGA_COLS) {
         tty->row = row;
         tty->col = col;
+
+        uint16_t pos = row * VGA_COLS + col;
+
+        outb(0x3D4, 0x0F);
+        outb(0x3D5, (uint8_t) (pos & 0xFF));
+        outb(0x3D4, 0x0E);
+        outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+    }
+}
+
+void tty_set_cursor(tty_t *tty, bool state) {
+    // * scanline for the moment will be _
+    tty->cursor = state;
+    if (state == true) {
+        outb(0x3D4, 0x0A);
+        outb(0x3D5, (inb(0x3D5) & 0xCF));
+        outb(0x3D4, 0x0B);
+        outb(0x3D5, (inb(0x3D5) & 0xEF));
+    }
+    else {
+        outb(0x3D4, 0x0A);
+        outb(0x3D5, 0x20);
     }
 }
 
 void tty_set_color(tty_t *tty, uint8_t front, uint8_t back) {
-    tty->color = vga_get_color(front, back);
+    tty->color = front | back << 4;
 }
 
 void tty_putchar(tty_t *tty, char c) {
@@ -78,6 +101,8 @@ void tty_putchar(tty_t *tty, char c) {
 
         // if (tty->row == VGA_ROWS) // TODO
     }
+
+    tty_move_cursor(tty, tty->row, tty->col);
 }
 
 void tty_print(tty_t *tty, const char *src) {
