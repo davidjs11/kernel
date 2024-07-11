@@ -1,19 +1,37 @@
 /*   tty.c   */
 
 /* TO-DO */
-// - colors!!
 // - move vga cursor
 // - tty switch
 
 #include <tty.h>
 #include <vga.h>
 
+// map colors to current implementation colors
+tty_color_t colors[16] = {
+    [TTY_BLACK]             = VGA_COLOR_BLACK,
+    [TTY_BLUE]              = VGA_COLOR_BLUE,
+    [TTY_GREEN]             = VGA_COLOR_GREEN,
+    [TTY_CYAN]              = VGA_COLOR_CYAN,
+    [TTY_RED]               = VGA_COLOR_RED,
+    [TTY_MAGENTA]           = VGA_COLOR_MAGENTA,
+    [TTY_BROWN]             = VGA_COLOR_BROWN,
+    [TTY_LIGHT_GREY]        = VGA_COLOR_LIGHT_GREY,
+    [TTY_DARK_GREY]         = VGA_COLOR_DARK_GREY,
+    [TTY_LIGHT_BLUE]        = VGA_COLOR_LIGHT_BLUE,
+    [TTY_LIGHT_GREEN]       = VGA_COLOR_LIGHT_GREEN,
+    [TTY_LIGHT_CYAN]        = VGA_COLOR_LIGHT_CYAN,
+    [TTY_LIGHT_RED]         = VGA_COLOR_LIGHT_RED,
+    [TTY_LIGHT_MAGENTA]     = VGA_COLOR_LIGHT_MAGENTA,
+    [TTY_LIGHT_BROWN]       = VGA_COLOR_LIGHT_BROWN,
+    [TTY_WHITE]             = VGA_COLOR_WHITE
+};
 
 void tty_init(tty_t *tty) {
     // init tty struct
     tty->row = 0;
     tty->col = 0;
-    tty->color = 0x00;
+    tty->color = vga_get_color(TTY_WHITE, TTY_BLACK);
     tty->cursor = false;
     tty->buffer = (char *) VGA_ADDRESS; // (for the moment)
 
@@ -23,7 +41,7 @@ void tty_init(tty_t *tty) {
         *buffer = ' ';
         buffer += 2;
     }
-    vga_cursor_off();
+    vga_cursor_off(); // disable cursor for the moment
 }
 
 size_t tty_get_rows(void) {
@@ -42,10 +60,15 @@ void tty_set_cursor(tty_t *tty, size_t row, size_t col) {
     }
 }
 
+void tty_set_color(tty_t *tty, uint8_t front, uint8_t back) {
+    tty->color = vga_get_color(front, back);
+}
+
 void tty_putchar(tty_t *tty, char c) {
     // print char
-    char *buffer = tty->buffer;
-    buffer[(tty->row*VGA_COLS+tty->col)*2] = c;
+    char *buffer = &(tty->buffer[(tty->row*VGA_COLS+tty->col)*2]);
+    *buffer++ = c;
+    *buffer = tty->color;
 
     // increment cursor
     tty->col++;

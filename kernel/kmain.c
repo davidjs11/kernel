@@ -6,10 +6,23 @@ void kmain(void) {
     // print something :-)
     tty_t tty;
     tty_init(&tty);
-    size_t rows = tty_get_rows();
-    size_t cols = tty_get_cols();
-    tty_set_cursor(&tty, rows/2, cols/2-4);
-    tty_print(&tty, "welcome!");
+    tty_print(&tty, "welcome, ");
+
+    // print something more colorful
+    tty_set_color(&tty, TTY_LIGHT_RED, TTY_BLACK);
+    tty_putchar(&tty, 'c');
+    tty_set_color(&tty, TTY_LIGHT_CYAN, TTY_BLACK);
+    tty_putchar(&tty, 'o');
+    tty_set_color(&tty, TTY_LIGHT_MAGENTA, TTY_BLACK);
+    tty_putchar(&tty, 'l');
+    tty_set_color(&tty, TTY_LIGHT_GREEN, TTY_BLACK);
+    tty_putchar(&tty, 'o');
+    tty_set_color(&tty, TTY_LIGHT_BROWN, TTY_BLACK);
+    tty_putchar(&tty, 'r');
+    tty_set_color(&tty, TTY_LIGHT_BLUE, TTY_BLACK);
+    tty_putchar(&tty, 's');
+    tty_set_color(&tty, TTY_WHITE, TTY_BLACK);
+    tty_putchar(&tty, '!');
 
     while (1);  // infinite loooooooooooooop
 }
