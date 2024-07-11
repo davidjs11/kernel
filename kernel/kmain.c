@@ -1,15 +1,15 @@
 /*   kmain.c   */
 
-#include "vga.h"
-#include "ports.h"
-#include "idt.h"
+#include <tty.h>
 
 void kmain(void) {
-    // print something
-    vga_clear();
-    vga_cursor_off();
-    vga_print("  - it works!!!");
-    function_test(); // this should print an 'X' at the beginning
+    // print something :-)
+    tty_t tty;
+    tty_init(&tty);
+    size_t rows = tty_get_rows();
+    size_t cols = tty_get_cols();
+    tty_set_cursor(&tty, rows/2, cols/2-4);
+    tty_print(&tty, "welcome!");
 
-    while (1);  // infinite looooooooooop
+    while (1);  // infinite loooooooooooooop
 }
