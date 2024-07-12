@@ -1,6 +1,7 @@
 /*   idt.c   */
 
 #include <idt.h>
+#include <isr.h>
 
 __attribute__((aligned(0x10)))
 idt_entry_t idt[256];           /* IDT */
@@ -19,11 +20,8 @@ void idt_set_entry(uint8_t index, void (*isr)(regs_t), uint8_t flags) {
 extern void idt_load();
 
 void idt_init(void) {
-    // memset(idt, 0, sizeof(idt));
-    for (size_t i=0; i<sizeof(idt); i++)
-        *((uint8_t *)idt) = 0x00;
-
-    idtr.base = (uintptr_t) idt;
+    idtr.base = (uintptr_t) &idt[0];
     idtr.limit = sizeof(idt) - 1;
-    idt_load();
+    isr_init();
+    idt_load((uintptr_t) &idtr);
 }

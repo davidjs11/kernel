@@ -55,7 +55,7 @@ isr_err     13
 isr_err     14
 isr_no_err  15
 isr_no_err  16
-isr_no_err  17
+isr_err     17
 isr_no_err  18
 isr_no_err  19
 isr_no_err  20
@@ -68,7 +68,7 @@ isr_no_err  26
 isr_no_err  27
 isr_no_err  28
 isr_no_err  29
-isr_no_err  30
+isr_err     30
 isr_no_err  31
 isr_no_err  32
 isr_no_err  33
@@ -90,7 +90,6 @@ isr_no_err  47
 /* define common handler */
 .extern isr_handler
 .type isr_handler, @function
-
 isr_common:
     pusha
     push %ds
@@ -107,11 +106,13 @@ isr_common:
 
     call isr_handler
 
+    pop %eax
     pop %gs
     pop %fs
     pop %es
     pop %ds
     popa
-    add $0x8, %esp
 
+    add $0x8, %esp
+    sti
     iret
