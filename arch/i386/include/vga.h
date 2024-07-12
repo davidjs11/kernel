@@ -3,7 +3,7 @@
 #ifndef VGA_H
 #define VGA_H
 
-#include <stdint.h>
+#include <util.h>
 
 #define VGA_COLOR_BLACK         0x0
 #define VGA_COLOR_BLUE          0x1

@@ -18,7 +18,7 @@ EMU		= qemu-system-i386
 # flags
 ASFLAGS =
 CCFLAGS = -Wall -I$(KERNEL)/include -I$(ARCHDIR)/include -ffreestanding
-CCFLAGS += -g -O2
+CCFLAGS += -g
 LDFLAGS =
 
 # arch-dependent files
