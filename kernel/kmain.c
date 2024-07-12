@@ -5,9 +5,6 @@
 
 void kmain(void) {
     init_sys();
-    
-    // test exceptions!! (when ready)
-    __asm__ volatile ("int $0x20");
 
     // print something :-)
     tty_t tty;

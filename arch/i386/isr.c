@@ -39,12 +39,12 @@ static const char *exception_msg[32] = {
     "reserved by intel"
 };
 
-void exception_handler(regs_t regs) {
+void exception_handler(regs_t *regs) {
     // improvised handler
     tty_t tty;
     tty_init(&tty);
-    tty_print(&tty, exception_msg[regs.int_no]);
-    __asm__ volatile ("cli; hlt");
+    tty_print(&tty, exception_msg[regs->int_no]);
+    while(1) __asm__ volatile ("cli; hlt");
     // it doesn't do nothing :-)
     // soon it will panic the kernel heheheh
 }
@@ -109,8 +109,7 @@ void isr_init(void) {
         isr_install(i, exception_handler);
 }
 
-void isr_handler(regs_t regs) {
-    // if handler exists -> call it
-    if (handlers[regs.int_no])
-        handlers[regs.int_no](regs);
+void isr_handler(regs_t *regs) {
+    if (handlers[regs->int_no])
+        handlers[regs->int_no](regs);
 }

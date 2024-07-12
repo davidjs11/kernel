@@ -22,6 +22,5 @@ extern void idt_load();
 void idt_init(void) {
     idtr.base = (uintptr_t) &idt[0];
     idtr.limit = sizeof(idt) - 1;
-    isr_init();
     idt_load((uintptr_t) &idtr);
 }

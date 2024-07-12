@@ -57,11 +57,11 @@ extern void isr_45(regs_t);
 extern void isr_46(regs_t);
 extern void isr_47(regs_t);
 
-typedef void (*isr_t)(regs_t);
+typedef void (*isr_t)(regs_t*);
 
-void exception_handler(regs_t regs);
+void exception_handler(regs_t *regs);
 void isr_init(void);
 void isr_install(size_t index, isr_t isr);
-void isr_handler(regs_t regs);
+void isr_handler(regs_t *regs);
 
 #endif // ARCH_ISR_H

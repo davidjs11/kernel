@@ -1,4 +1,5 @@
 /*   entry.S   */
+
 .code32
 
 /* kernel entry point */
@@ -59,7 +60,7 @@ isr_err     17
 isr_no_err  18
 isr_no_err  19
 isr_no_err  20
-isr_no_err  21
+isr_err     21
 isr_no_err  22
 isr_no_err  23
 isr_no_err  24
@@ -102,7 +103,7 @@ isr_common:
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
-    cld
+    push %esp
 
     call isr_handler
 

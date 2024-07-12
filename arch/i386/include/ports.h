@@ -5,12 +5,16 @@
 
 static inline char inb(short port) {
     char r;
-    asm("inb %1, %0" : "=a" (r) : "dN" (port));
+    __asm__ volatile ("inb %1, %0" : "=a" (r) : "dN" (port));
     return r;
 }
 
 static inline void outb(short port, char data) {
-    asm("outb %1, %0" : : "dN" (port), "a" (data));
+    __asm__ volatile ("outb %1, %0" : : "dN" (port), "a" (data));
+}
+
+static inline void io_wait(void) {
+    outb(0x80, 0x00);
 }
 
 #endif // PORTS_H
