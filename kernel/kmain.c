@@ -2,6 +2,7 @@
 
 #include <init.h>
 #include <tty.h>
+#include <timer.h>
 
 void kmain(void) {
     init_sys();
@@ -13,5 +14,14 @@ void kmain(void) {
     tty_set_color(&tty, TTY_RED, TTY_BLACK);
     tty_print(&tty, "welcome!");
 
-    while(1);  // infinite loooooooooooooop
+    timer_init(20); // start at 20 Hz
+
+    // wait for the timer for 1 sec
+    while(1)
+        if (timer_get() == 20) {
+            tty_print(&tty, "nice!!");
+            break;
+        }
+
+    while(1);   // infinite loooooooooooooop
 }
