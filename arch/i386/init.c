@@ -6,6 +6,7 @@
 #include <idt.h>
 #include <isr.h>
 #include <pic.h>
+#include <irq.h>
 
 void init_sys(void) {
     pic_remap(0x20, 0x28);

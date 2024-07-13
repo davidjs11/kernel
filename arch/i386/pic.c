@@ -9,7 +9,6 @@ void pic_send_eoi(uint8_t irq) {
 }
 
 void pic_remap(uint8_t offset_master, uint8_t offset_slave) {
-
     // get mask registers
     uint8_t mask_master, mask_slave;
     mask_master = inb(PIC_MASTER_DATA);
@@ -39,6 +38,7 @@ void pic_remap(uint8_t offset_master, uint8_t offset_slave) {
     outb(PIC_SLAVE_COMMAND,  ICW4_8086);
     io_wait();
 
+    // set mask registers
     outb(PIC_MASTER_DATA, mask_master);
     outb(PIC_SLAVE_DATA,  mask_slave);
 }
@@ -49,7 +49,12 @@ void pic_disable(void) {
 }
 
 void pic_set_irq_mask(uint8_t irq) {
-    /* TO-DO */
+    // get mask
+    uint8_t mask;
+    mask = (irq < 8) ? inb(PIC_MASTER_DATA) : inb(PIC_SLAVE_DATA);
+
+    // set new mask
+    outb((irq < 8) ? PIC_MASTER_DATA : PIC_SLAVE_DATA, mask);
 }
 
 void pic_clear_irq_mask(uint8_t irq) {

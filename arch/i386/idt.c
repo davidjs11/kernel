@@ -4,7 +4,7 @@
 #include <isr.h>
 
 __attribute__((aligned(0x10)))
-idt_entry_t idt[256];           /* IDT */
+idt_entry_t idt[256] = { 0 };   /* IDT */
 static idtr_t idtr;             /* IDT pointer */
 
 void idt_set_entry(uint8_t index, void (*isr)(regs_t), uint8_t flags) {

@@ -3,6 +3,7 @@
 #include <tty.h>
 #include <isr.h>
 #include <idt.h>
+#include <pic.h>
 
 isr_t handlers[ISR_NUM] = { 0 };
 
@@ -112,4 +113,8 @@ void isr_init(void) {
 void isr_handler(regs_t *regs) {
     if (handlers[regs->int_no])
         handlers[regs->int_no](regs);
+
+    // if irq -> send EOI
+    if (0x20 <= regs->int_no && regs->int_no < 0x30)
+        pic_send_eoi(regs->int_no - 0x20);
 }
