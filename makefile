@@ -6,6 +6,7 @@
 ARCH	= i386
 ARCHDIR = arch/$(ARCH)
 BOOT	= $(ARCHDIR)/boot
+LIBC	= libc
 KERNEL	= kernel
 BIN		= bin
 
@@ -16,10 +17,16 @@ LD		= i386-elf-ld
 EMU		= qemu-system-i386
 
 # flags
-ASFLAGS =
-CCFLAGS = -Wall -I$(KERNEL)/include -I$(ARCHDIR)/include -ffreestanding
-CCFLAGS += -g
-LDFLAGS =
+ASFLAGS 	=
+LDFLAGS 	=
+CCFLAGS 	= -Wall -ffreestanding -g -O2
+CCFLAGS    += -I$(KERNEL)/include
+CCFLAGS    += -I$(ARCHDIR)/include
+CCFLAGS    += -I$(LIBC)/include
+
+# libc files
+LIBC_SRC		= $(wildcard $(LIBC)/*.c)
+LIBC_OBJ	    = $(patsubst $(LIBC)/%.c,$(LIBC)/obj/%.o, $(LIBC_SRC))
 
 # arch-dependent files
 ARCH_S_SRC		= $(wildcard $(ARCHDIR)/*.S)
@@ -66,7 +73,7 @@ $(BOOT)/obj/boot.o: $(BOOT)/boot.S
 
 
 # --- kernel binary
-$(BIN)/kernel.bin: $(KERNEL_OBJ) $(ARCH_OBJ)
+$(BIN)/kernel.bin: $(KERNEL_OBJ) $(ARCH_OBJ) $(LIBC_OBJ)
 	@echo "LD - kernel.bin"
 	@$(LD) -o $(BIN)/kernel.bin $^ -Tlink.ld $(LDFLAGS)
 
@@ -93,6 +100,14 @@ $(ARCHDIR)/obj/%.o: $(ARCHDIR)/%.S
 	@echo "AS - $<"
 	@mkdir -p $(ARCHDIR)/obj
 	@$(AS) -o $@ -c $< $(ASFLAGS)
+
+
+# --- libc files
+$(LIBC)/obj/%.o: $(LIBC)/%.c
+	@echo "CC - $<"
+	@mkdir -p $(LIBC)/obj
+	@$(CC) -o $@ -c $< $(CCFLAGS)
+
 
 # --- boot image
 $(BOOTIMG): $(BIN_FILES)
