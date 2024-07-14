@@ -106,7 +106,7 @@ void isr_init(void) {
     idt_set_entry(47, isr_47, 0x8E);
 
     // set exception handlers
-    for (size_t i=0; i<32; i++)
+    for (size_t i = 0; i < 32; i++)
         isr_install(i, exception_handler);
 }
 
