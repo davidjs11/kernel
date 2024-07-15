@@ -35,7 +35,7 @@ typedef enum {
     TTY_WHITE
 } tty_color_t;
 
-void tty_init(tty_t *);
+void tty_init();
 size_t tty_get_rows(void);
 size_t tty_get_cols(void);
 void tty_move_cursor(tty_t *, size_t row, size_t col);

@@ -1,12 +1,10 @@
 /*   stdlib.c   */
 
 #include <stdlib.h>
-#include <tty.h>
+#include <stdio.h>
 
 void abort(void) {
-    tty_t tty;
-    tty_init(&tty);
-    tty_print(&tty, "system aborted :-(");
+    printf("system aborted :-(");
     __asm__ volatile ("cli; hlt");
 }
 

@@ -28,13 +28,14 @@ tty_color_t colors[16] = {
     [TTY_WHITE]             = VGA_COLOR_WHITE
 };
 
-void tty_init(tty_t *tty) {
+tty_t tty;
+void tty_init() {
     // init tty struct
-    tty->row = 0;
-    tty->col = 0;
-    tty->color = TTY_WHITE | TTY_BLACK << 4;
-    tty->buffer = (char *) VGA_ADDRESS; // (for the moment)
-    tty_move_cursor(tty, 0, 0);
+    tty.row = 0;
+    tty.col = 0;
+    tty.color = TTY_WHITE | TTY_BLACK << 4;
+    tty.buffer = (char *) VGA_ADDRESS; // (for the moment)
+    tty_move_cursor(&tty, 0, 0);
 
     // clear vga screen
     char *buffer = (char *) VGA_ADDRESS;
