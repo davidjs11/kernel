@@ -51,6 +51,9 @@ disk_read_loop:
 same_segment:
     loop disk_read_loop     // loop until cx = 0
 
+    /* get system memory map */
+    call e820
+
     /* enable protected mode */
     movw $msg_pm, %si
     call print
@@ -92,6 +95,50 @@ print_end:
     popa
     ret
 
+/* get system memory map at 0x80000 */
+e820:
+    movl $0xE820, %eax      // query system address map
+    movw $0x8004, %di       // dest. buffer
+    xorl %ebx, %ebx         // start from 0
+    xorw %bp, %bp           // bp -> entry counter
+    movl $24, %ecx          // ask for 24B entries
+    movl $1, %es:20(%di)    // ACPI signature
+    movl $0x534D4150, %edx  // SMAP function
+    int $0x15
+    jc e820_error
+    movl $0x534D4150, %edx  // SMAP again (some BIOS delete this)
+    cmp %eax, %edx          // eax != SMAP -> error
+    jne e820_error
+    testl %ebx, %ebx        // ebx = 0 -> only 1 entry long // ???
+    je e820_error
+    jmp e820_jmpin
+e820_loop:
+    movl $0xE820, %eax
+    movl $24, %ecx          // ask for 24 bytes
+    movl $1, %es:20(%di)    // some acpi thing i dont understand
+    int $0x15
+    jc e820_end             // CF = 1 -> finished
+    movl $0x534D4150, %edx  // SMAP (again, some BIOS delete this)
+e820_jmpin:
+    jcxz e820_skipentry     // (length is zero)
+    cmp $20, %cx            // got a 24 byte entry?
+e820_notext:
+    movl %es:8(%di), %ecx   // memory region length (lower 32)
+    orl %es:12(%di), %ecx   // or with upper 32
+    jz e820_skipentry       // if length is zero -> skip
+    inc %bp
+    add %di, 24
+e820_skipentry:
+    test %ebx, %ebx         // ebx = 0 -> operation complete
+    jne e820_loop
+e820_end:
+    movw %bp, 0x8000        // store number of entries
+    clc
+    ret
+e820_error:
+    jmp e820_error 
+// thank god osdev wiki exists
+
 /* disk reading packet */
 .align 4
 disk_packet:    .byte 0x10        // size of the packet (16 bytes)
@@ -108,7 +155,6 @@ gdt_start:
 gdt_null:       .quad 0x0000000000000000
 gdt_code:       .quad 0x00CF9A000000FFFF
 gdt_data:       .quad 0x00CF92000000FFFF
-
 gdt_pointer:    .word . - gdt_start - 1
                 .long gdt_start
 

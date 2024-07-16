@@ -7,9 +7,9 @@
 #include <isr.h>
 #include <irq.h>
 
-uint64_t ticks;
+uint64_t ticks; // global tick counter
 
-void timer_handler(regs_t *regs) {
+static void timer_handler(regs_t *regs) {
     ticks++;
 }
 
@@ -29,9 +29,4 @@ void timer_init(uint32_t freq) {
 
 uint64_t timer_get(void) {
     return ticks;
-}
-
-
-void timer_disable(void) {
-    /* TO-DO */
 }

@@ -16,8 +16,11 @@ void kmain(void) {
     // print something :-)
     printf("hello from kmain!\n");
 
-    // abort after 3 seconds
-    while(1) if (timer_get() == 60) abort();
+    // get number of memory map entries
+    int num = *((int *) 0x8000);
+    printf("number of entries in system's memory map: ");
+    putchar('0'+num);
+    printf("\n");
 
     // infinite loooooooooooooop
     while(1);
