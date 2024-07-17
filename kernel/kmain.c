@@ -9,18 +9,18 @@
 
 extern tty_t tty;
 void kmain(void) {
+    tty_init();
     init_sys();
     timer_init(20); // start at 20 Hz
-    tty_init();
 
     // print something :-)
-    printf("hello from kmain!\n");
-
-    // get number of memory map entries
-    int num = *((int *) 0x8000);
-    printf("number of entries in system's memory map: ");
-    putchar('0'+num);
-    printf("\n");
+    printf("\nhello from kmain!\n\n");
+    printf("printf test:\n");
+    printf("%%:       %%\n", -1234567890);
+    printf("int:     %d\n", -1234567890);
+    printf("uint:    %u\n", -1234567890);
+    printf("char:    %c\n", 'O');
+    printf("string:  %s\n","welcome!!!!");
 
     // infinite loooooooooooooop
     while(1);
