@@ -13,24 +13,20 @@ int putchar(char c) {
 }
 
 void int_to_str(int num, char *str) {
+    // check if negative
     bool negative = num < 0;
-    if (negative) {
-        num = -num;
-    }
-    
+    if (negative) num = -num;
+
+    // create string
     char *start = str;
     do {
         *str++ = '0' + (num % 10);
         num /= 10;
     } while (num > 0);
-
-    if (negative) {
-        *str++ = '-';
-    }
-
+    if (negative) *str++ = '-';
     *str = '\0';
     
-    // Reverse the string
+    // reverse string
     for (char *p1 = start, *p2 = str - 1; p1 < p2; ++p1, --p2) {
         char temp = *p1;
         *p1 = *p2;
@@ -39,15 +35,36 @@ void int_to_str(int num, char *str) {
 }
 
 void uint_to_str(unsigned int num, char *str) {
+    // create string
     char *start = str;
     do {
         *str++ = '0' + (num % 10);
         num /= 10;
     } while (num > 0);
-
     *str = '\0';
     
-    // Reverse the string
+    // reverse string
+    for (char *p1 = start, *p2 = str - 1; p1 < p2; ++p1, --p2) {
+        char temp = *p1;
+        *p1 = *p2;
+        *p2 = temp;
+    }
+}
+
+void hex_to_str(unsigned int num, char *str) {
+    // create string
+    const char *hex_digits = "0123456789ABCDEF";
+    char *start = str;
+    if (num == 0) *str++ = '0';
+    else
+        while (num > 0) {
+            unsigned int digit = num % 16;
+            *str++ = hex_digits[digit];
+            num /= 16;
+        }
+    *str = '\0';
+
+    // reverse string
     for (char *p1 = start, *p2 = str - 1; p1 < p2; ++p1, --p2) {
         char temp = *p1;
         *p1 = *p2;
@@ -57,8 +74,8 @@ void uint_to_str(unsigned int num, char *str) {
 
 // poor implementation for the moment
 int printf(const char *format, ...) {
-    va_list parameters;
-    va_start(parameters, format);
+    va_list args;
+    va_start(args, format);
 
     int len = strlen(format);
     for (size_t i = 0; i < len; i++) {
@@ -77,27 +94,29 @@ int printf(const char *format, ...) {
                 /* int */
                 case 'd':
                 case 'i':
-                    int_to_str(va_arg(parameters, int), str);
+                    int_to_str(va_arg(args, int), str);
                     printf(str);
                     break;
                 /* unsigned int */
                 case 'u':
-                    uint_to_str(va_arg(parameters, int), str);
+                    uint_to_str(va_arg(args, int), str);
+                    printf(str);
+                    break;
+                /* hexadecimal */
+                case 'x':
+                    hex_to_str(va_arg(args, unsigned int), str);
                     printf(str);
                     break;
                 /* string */
                 case 's':
-                    printf(va_arg(parameters, char *));
+                    printf(va_arg(args, char *));
                     break;
                 /* char */
                 case 'c':
-                    putchar((char) va_arg(parameters, int));
+                    putchar((char) va_arg(args, int));
                     break;
-
                 /* octal */
                 case 'o': break;
-                /* hexadecimal */
-                case 'x': break;
                 /* double (not planned yet) */
                 case 'f': break;
             }
@@ -106,5 +125,6 @@ int printf(const char *format, ...) {
             tty_putchar(&tty, format[i]);
     }
 
+    va_end(args);
     return len;
 }
