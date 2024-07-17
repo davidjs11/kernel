@@ -8,20 +8,12 @@
 #include <pic.h>
 #include <irq.h>
 #include <stdio.h>
-
-typedef struct SMAP_entry {
-	uint32_t base_low;
-	uint32_t base_high;
-	uint32_t length_low;
-	uint32_t length_high;
-	uint32_t type;
-	uint32_t acpi;
-}__attribute__((packed)) smap_entry_t;
+#include <smap.h>
 
 const char *smap_entry_types[3] = {
-    [0] = "undefined",
-    [1] = "usable",
-    [2] = "reserved",
+    [SMAP_ENTRY_UNDEFINED]  = "undefined",
+    [SMAP_ENTRY_USABLE]     = "usable",
+    [SMAP_ENTRY_RESERVED]   = "reserved",
 };
 
 void init_sys(void) {
@@ -33,7 +25,8 @@ void init_sys(void) {
     /* memory map */
     int num = *((int *) 0x8000);
     printf("-- memory map --\n");
-    for (size_t i = 0; i <= num; i++) {
+    size_t total_mem = 0, usable_mem = 0;
+    for (size_t i = 0; i < num; i++) {
         printf("entry %d: ", i);
         smap_entry_t entry;
         entry = *(((smap_entry_t *) 0x8004)+i);
@@ -46,7 +39,20 @@ void init_sys(void) {
         // length
         uint64_t length = (entry.length_high);
         length = (length << 32) | entry.length_low;
-        printf("0x%x  ", base+length-1);
+        total_mem += length;
+        if (entry.type == SMAP_ENTRY_USABLE)
+            usable_mem += length;
+        printf("0x%x ", base+length-1);
+
+        // size
+        length /= 1024; // KB
+        if (length > 1024) {
+            length /= 1024; // MB
+            printf("(%dMB) ", length);
+        }
+        else {
+            printf("(%dKB) ", length);
+        }
 
         // type
         printf("%s", smap_entry_types[entry.type]);
@@ -54,6 +60,6 @@ void init_sys(void) {
         printf("\n");
     }
 
-
-    printf("\n");
+    printf("total memory: %dMB (usable: %dMB)\n",
+           total_mem/1024/1024, usable_mem/1024/1024);
 }

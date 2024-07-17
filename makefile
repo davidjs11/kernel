@@ -15,6 +15,7 @@ AS		= i386-elf-as
 CC		= i386-elf-gcc
 LD		= i386-elf-ld
 EMU		= qemu-system-i386
+MEM		= 256M
 
 # flags
 ASFLAGS 	=
@@ -50,10 +51,10 @@ BIN_FILES		= $(BIN)/boot.bin $(BIN)/kernel.bin
 all: $(BOOTIMG)
 
 run: all
-	@$(EMU) -drive format=raw,file=$(BOOTIMG)
+	@$(EMU) -drive format=raw,file=$(BOOTIMG) -m $(MEM)
 
-debug:
-	@$(EMU) $(BOOTIMG) -s -S
+debug: all
+	@$(EMU) -drive format=raw,file=$(BOOTIMG) -m $(MEM) -s -S
 
 clean:
 	@echo "cleaning..."

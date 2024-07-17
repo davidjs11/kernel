@@ -15,7 +15,7 @@ void kmain(void) {
 
     // print something :-)
     // printf("\nhello from kmain!\n\n");
-    printf("-- printf() test --\n");
+    printf("\n-- printf() test --\n");
     printf("int:     %d\n", 1234567890);
     printf("uint:    %u\n", -1234567890);
     printf("hex:     0x%x\n", 0xDEADBEEF);
