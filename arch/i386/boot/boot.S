@@ -114,20 +114,23 @@ e820:
     jmp e820_jmpin
 e820_loop:
     movl $0xE820, %eax
+    movl $1, %es:20(%di)    // force acpi entry
     movl $24, %ecx          // ask for 24 bytes
-    movl $1, %es:20(%di)    // some acpi thing i dont understand
     int $0x15
     jc e820_end             // CF = 1 -> finished
     movl $0x534D4150, %edx  // SMAP (again, some BIOS delete this)
 e820_jmpin:
     jcxz e820_skipentry     // (length is zero)
     cmp $20, %cx            // got a 24 byte entry?
+    jbe e820_notext
+    testb $1, %es:20(%di)   // check "ignore entry" bit
+    je e820_skipentry
 e820_notext:
     movl %es:8(%di), %ecx   // memory region length (lower 32)
     orl %es:12(%di), %ecx   // or with upper 32
     jz e820_skipentry       // if length is zero -> skip
     inc %bp
-    add %di, 24
+    addw $24, %di
 e820_skipentry:
     test %ebx, %ebx         // ebx = 0 -> operation complete
     jne e820_loop
