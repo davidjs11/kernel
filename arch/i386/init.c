@@ -12,8 +12,8 @@
 
 const char *smap_entry_types[3] = {
     [SMAP_ENTRY_UNDEFINED]  = "undefined",
-    [SMAP_ENTRY_USABLE]     = "usable",
-    [SMAP_ENTRY_RESERVED]   = "reserved",
+    [SMAP_ENTRY_USABLE]     = "usable   ",
+    [SMAP_ENTRY_RESERVED]   = "reserved ",
 };
 
 void init_sys(void) {
@@ -34,7 +34,7 @@ void init_sys(void) {
         // base address
         uint64_t base = (entry.base_high);
         base = (base << 32) | entry.base_low;
-        printf("0x%x-", base);
+        printf("0x%016x - ", base);
 
         // length
         uint64_t length = (entry.length_high);
@@ -42,7 +42,11 @@ void init_sys(void) {
         total_mem += length;
         if (entry.type == SMAP_ENTRY_USABLE)
             usable_mem += length;
-        printf("0x%x ", base+length-1);
+        printf("0x%016x ", base+length-1);
+
+        // type
+        printf("\t%s", smap_entry_types[entry.type]);
+
 
         // size
         length /= 1024; // KB
@@ -53,9 +57,6 @@ void init_sys(void) {
         else {
             printf("\t(%dKB) ", length);
         }
-
-        // type
-        printf("\t%s", smap_entry_types[entry.type]);
 
         printf("\n");
     }

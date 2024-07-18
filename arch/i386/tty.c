@@ -129,7 +129,7 @@ void tty_newline(tty_t *tty) {
 
 void tty_tab(tty_t *tty) {
     tty->col++;
-    while (tty->col%4) tty->col++;
+    while (tty->col%TTY_TAB_SIZE) tty->col++;
     if (tty->col > VGA_COLS) tty_newline(tty);
     tty_move_cursor(tty, tty->row, tty->col);
 }

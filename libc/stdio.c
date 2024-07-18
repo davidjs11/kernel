@@ -4,6 +4,7 @@
 #include <tty.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 extern tty_t tty; // global tty
 
@@ -87,41 +88,62 @@ int printf(const char *format, ...) {
             i += 1;
             if (i == len) break;
 
-            char str[32];
+            // number of characters
+            char char_num_text[16] = { 0 };
+            size_t j = 0;
+            while ('0' <= format[i] && format[i] <= '9') {
+                char_num_text[j++] = format[i];
+                i += 1;
+                if (i == len) break;
+            }
+            size_t char_num = atoi(char_num_text);
+
+            char formatted_str[1024] = { 0 };
             switch (format[i]) {
                 /* % */
                 case '%':
-                    putchar('%');
+                    formatted_str[0] = '%';
                     break;
                 /* int */
                 case 'd':
                 case 'i':
-                    int_to_str(va_arg(args, int), str);
-                    printf(str);
+                    int_to_str(va_arg(args, int), formatted_str);
                     break;
                 /* unsigned int */
                 case 'u':
-                    uint_to_str(va_arg(args, int), str);
-                    printf(str);
+                    uint_to_str(va_arg(args, int), formatted_str);
                     break;
                 /* hexadecimal */
                 case 'x':
-                    hex_to_str(va_arg(args, unsigned int), str);
-                    printf(str);
+                    hex_to_str(va_arg(args, unsigned int), formatted_str);
                     break;
                 /* string */
                 case 's':
-                    printf(va_arg(args, char *));
+                    // horrible; i'll fix this sooner or later
+                    char *str = va_arg(args, char *);
+                    memcpy(formatted_str, str, strlen(str)%1024);
                     break;
                 /* char */
                 case 'c':
-                    putchar((char) va_arg(args, int));
+                    formatted_str[0] = ((char) va_arg(args, int));
                     break;
                 /* octal */
                 case 'o': break;
                 /* double (not planned yet) */
                 case 'f': break;
             }
+
+            
+            if (char_num) {
+                formatted_str[char_num] = '\0';
+                size_t format_len = strlen(formatted_str);
+                if (format_len < char_num) {
+                    memmove(formatted_str+(char_num-format_len), formatted_str, format_len);
+                    memset(formatted_str, '0', char_num-format_len);
+                }
+            }
+
+            printf(formatted_str);
         }
         else
             tty_putchar(&tty, format[i]);

@@ -7,6 +7,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define TTY_TAB_SIZE    2 
+
 typedef struct {
     size_t  row;
     size_t  col;
