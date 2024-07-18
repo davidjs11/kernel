@@ -48,14 +48,14 @@ void init_sys(void) {
         length /= 1024; // KB
         if (length > 1024) {
             length /= 1024; // MB
-            printf("(%dMB) ", length);
+            printf("\t(%dMB) ", length);
         }
         else {
-            printf("(%dKB) ", length);
+            printf("\t(%dKB) ", length);
         }
 
         // type
-        printf("%s", smap_entry_types[entry.type]);
+        printf("\t%s", smap_entry_types[entry.type]);
 
         printf("\n");
     }

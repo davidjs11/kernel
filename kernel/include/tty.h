@@ -42,6 +42,8 @@ void tty_move_cursor(tty_t *, size_t row, size_t col);
 void tty_set_cursor(tty_t *, bool state);
 void tty_set_color(tty_t *, uint8_t front, uint8_t back);
 void tty_putchar(tty_t *, char c);
+void tty_newline(tty_t *);
+void tty_tab(tty_t *);
 void tty_print(tty_t *, const char *src);
 void tty_write(tty_t *, const char *src, size_t n);
 

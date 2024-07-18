@@ -7,6 +7,7 @@
 #include <ports.h>
 #include <tty.h>
 #include <vga.h>
+#include <string.h>
 
 // map colors to current implementation colors
 tty_color_t colors[16] = {
@@ -98,11 +99,38 @@ void tty_putchar(tty_t *tty, char c) {
     tty->col++;
     if (tty->col == VGA_COLS) {
         tty->col = 0;
-        tty->row++;
-
-        // if (tty->row == VGA_ROWS) // TODO
+        tty_newline(tty);
     }
 
+    tty_move_cursor(tty, tty->row, tty->col);
+}
+
+void tty_newline(tty_t *tty) {
+    tty->row++;
+    tty->col = 0;
+
+    // if it's the last row
+    if (tty->row > VGA_ROWS) {
+        // move everything up
+        memmove(tty->buffer, tty->buffer+(VGA_COLS*2),
+                (VGA_ROWS-1)*(VGA_COLS*2));
+
+        // clear last row
+        memset(tty->buffer+(VGA_COLS*2)*(VGA_ROWS-1), 0,
+               VGA_COLS*2);
+
+        // increment cursor
+        tty->col = 0;
+        tty->row = VGA_ROWS-1;
+    }
+
+    tty_move_cursor(tty, tty->row, tty->col);
+}
+
+void tty_tab(tty_t *tty) {
+    tty->col++;
+    while (tty->col%4) tty->col++;
+    if (tty->col > VGA_COLS) tty_newline(tty);
     tty_move_cursor(tty, tty->row, tty->col);
 }
 

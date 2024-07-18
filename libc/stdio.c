@@ -80,7 +80,9 @@ int printf(const char *format, ...) {
     int len = strlen(format);
     for (size_t i = 0; i < len; i++) {
         if (format[i] == '\n')
-            tty_move_cursor(&tty, tty.row+1, 0);
+            tty_newline(&tty);
+        else if (format[i] == '\t')
+            tty_tab(&tty);
         else if (format[i] == '%') {
             i += 1;
             if (i == len) break;
