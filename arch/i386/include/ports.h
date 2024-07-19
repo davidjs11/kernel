@@ -1,7 +1,7 @@
 /*   ports.h   */
 
-#ifndef PORTS_H
-#define PORTS_H
+#ifndef I386_PORTS_H
+#define I386_PORTS_H
 
 static inline char inb(short port) {
     char r;
@@ -17,4 +17,4 @@ static inline void io_wait(void) {
     outb(0x80, 0x00);
 }
 
-#endif // PORTS_H
+#endif // I386_PORTS_H

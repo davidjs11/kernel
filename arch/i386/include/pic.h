@@ -1,7 +1,7 @@
 /*   pic.h   */
 
-#ifndef ARCH_PIC_H
-#define ARCH_PIC_H
+#ifndef I386_PIC_H
+#define I386_PIC_H
 
 #include <util.h>
 
@@ -20,4 +20,4 @@ void pic_disable(void);
 void pic_set_irq_mask(uint8_t irq);
 void pic_clear_irq_mask(uint8_t irq);
 
-#endif // ARCH_PIC_H
+#endif // I386_PIC_H

@@ -1,7 +1,7 @@
 /*   util.h   */
 
-#ifndef ARCH_UTIL_H
-#define ARCH_UTIL_H
+#ifndef I386_UTIL_H
+#define I386_UTIL_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -14,4 +14,4 @@ typedef struct {
     uint32_t eip, cs, efl, esp, ss;
 } regs_t;
 
-#endif // ARCH_UTIL_H
+#endif // I386_UTIL_H

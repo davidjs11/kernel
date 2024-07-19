@@ -1,9 +1,5 @@
 /*   tty.c   */
 
-/* TO-DO */
-// - newline ??
-// - tty switch
-
 #include <ports.h>
 #include <tty.h>
 #include <vga.h>

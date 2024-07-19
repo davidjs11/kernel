@@ -1,7 +1,7 @@
 /*   smap.h   */
 
-#ifndef ARCH_SMAP_H
-#define ARCH_SMAP_H
+#ifndef I386_SMAP_H
+#define I386_SMAP_H
 
 #define SMAP_ENTRY_UNDEFINED    0
 #define SMAP_ENTRY_USABLE       1
@@ -16,4 +16,4 @@ typedef struct SMAP_entry {
 	uint32_t acpi;
 }__attribute__((packed)) smap_entry_t;
 
-#endif // ARCH_SMAP_H
+#endif // I386_SMAP_H

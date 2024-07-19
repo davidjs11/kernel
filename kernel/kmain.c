@@ -22,14 +22,6 @@ void kmain(void) {
     printf("string:  %s\n","welcome!!!");
     printf("\nhello from kmain! ");
 
-    // uint16_t x = 0;
-    // while(1) {
-    //     if (timer_get()%2 == 0) {
-    //         printf("tab %d\t", x++);
-    //         while (timer_get()%2 != 1);
-    //     }
-    // }
-
     // infinite loooooooooooooop
     while(1);
 }

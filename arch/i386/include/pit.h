@@ -1,7 +1,7 @@
 /*   pit.h   */
 
-#ifndef ARCH_PIT_H
-#define ARCH_PIT_H
+#ifndef I386_PIT_H
+#define I386_PIT_H
 
 #define PIT_CLK_1               0x40
 #define PIT_CLK_2               0x41
@@ -11,4 +11,4 @@
 #define PIT_OCW_MASK_COUNTER    0xC0
 #define PIT_CLK_HZ              1193180
 
-#endif // ARCH_PIT_H
+#endif // I386_PIT_H

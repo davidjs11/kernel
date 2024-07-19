@@ -1,7 +1,7 @@
 /*   isr.h   */
 
-#ifndef ARCH_ISR_H
-#define ARCH_ISR_H
+#ifndef I386_ISR_H
+#define I386_ISR_H
 
 #include <util.h>
 

@@ -1,7 +1,7 @@
 /*   vga.h   */
 
-#ifndef VGA_H
-#define VGA_H
+#ifndef I386_VGA_H
+#define I386_VGA_H
 
 #include <util.h>
 
@@ -26,4 +26,4 @@
 #define VGA_ROWS 25
 #define VGA_COLS 80
 
-#endif // VGA_H
+#endif // I386_VGA_H
