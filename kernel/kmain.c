@@ -6,21 +6,22 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <pmm.h>
 
-extern tty_t tty;
+extern uint32_t kernel_end;
 void kmain(void) {
     tty_init();
     init_sys();
     timer_init(20); // start at 20 Hz
 
     // print something :-)
-    printf("\n-- printf() test --\n");
-    printf("int:     %d\n", 1234567890);
-    printf("uint:    %u\n", -1234567890);
-    printf("hex:     0x%x\n", 0xDEADBEEF);
-    printf("char:    %c\n", 'X');
-    printf("string:  %s\n","welcome!!!");
-    printf("\nhello from kmain! ");
+    printf("\nhello from kmain!\n");
+
+    printf("\nsearching for a free page frame...\n");
+    void *mem = pmm_alloc();
+    if (mem == NULL)
+        printf("not found :-(\n");
+    else printf("found at address 0x%08x !\n", mem);
 
     // infinite loooooooooooooop
     while(1);

@@ -9,6 +9,7 @@
 #include <irq.h>
 #include <stdio.h>
 #include <smap.h>
+#include <pmm.h>
 
 const char *smap_entry_types[3] = {
     [SMAP_ENTRY_UNDEFINED]  = "undefined",
@@ -16,13 +17,14 @@ const char *smap_entry_types[3] = {
     [SMAP_ENTRY_RESERVED]   = "reserved ",
 };
 
+extern void *kernel_end;
 void init_sys(void) {
-    /* interrupts */
+    // interrupts
     pic_remap(0x20, 0x28);
     isr_init();
     idt_init();
 
-    /* memory map */
+    // memory map
     int num = *((int *) 0x8000);
     printf("-- memory map --\n");
     size_t total_mem = 0, usable_mem = 0;
@@ -34,7 +36,7 @@ void init_sys(void) {
         // base address
         uint64_t base = (entry.base_high);
         base = (base << 32) | entry.base_low;
-        printf("0x%016x - ", base);
+        printf("0x%08x - ", base);
 
         // length
         uint64_t length = (entry.length_high);
@@ -42,11 +44,10 @@ void init_sys(void) {
         total_mem += length;
         if (entry.type == SMAP_ENTRY_USABLE)
             usable_mem += length;
-        printf("0x%016x ", base+length-1);
+        printf("0x%08x ", base+length-1);
 
         // type
         printf("\t%s", smap_entry_types[entry.type]);
-
 
         // size
         length /= 1024; // KB
@@ -63,4 +64,7 @@ void init_sys(void) {
 
     printf("total memory: %dMB (usable: %dMB)\n",
            total_mem/1024/1024, usable_mem/1024/1024);
+
+    /* physical memory */
+    pmm_init(total_mem, (uint8_t *) &kernel_end);
 }
