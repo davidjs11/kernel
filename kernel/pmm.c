@@ -21,7 +21,6 @@ inline void pmm_bitmap_set(size_t frame) {
 }
 
 inline void pmm_bitmap_unset(size_t frame) {
-    if (frame > pmm.total_blocks) return;
     pmm.memmap[frame/8] &= ~(1 << frame%8);
 }
 
@@ -46,25 +45,35 @@ void pmm_init(size_t size, uint8_t *map) {
 
     // set all pages as allocated
     memset(pmm.memmap, 0xFF, pmm.total_blocks/8);
-
-    pmm_bitmap_unset(0xCAFE); // (setting for testing purposes)
 }
 
 void *pmm_alloc() {
-    size_t frame = 0;
+    // if there isn't a free page frame, return NULL
+    if (pmm.used_blocks == pmm.total_blocks) return NULL;
 
-    // search for a free page
+    // search for a free page frame
     size_t i = 0;
     while (pmm.memmap[i] == 0xFF) i++;
+    if (i == pmm.total_blocks/8) return NULL;
 
-    // get the free page index
+    // get the free page frame index
+    size_t frame = 0;
     size_t j;
-    for (j = 0; !frame && i < pmm.total_blocks/8; j++) {
+    for (j = 0; !frame; j++) {
         if (!(pmm.memmap[i] & (1 << j)))
             frame = i * 8 + j;
     }
 
     // set page frame as used and return it
     pmm_bitmap_set(frame);
+    pmm.used_blocks++;
     return (void *) (frame * PAGE_SIZE);
+}
+
+void pmm_free(void *addr) {
+    size_t frame = (size_t) addr / PAGE_SIZE;
+    if (0 < frame && frame < pmm.total_blocks) {
+        pmm_bitmap_unset(frame);
+        pmm.used_blocks--;
+    }
 }

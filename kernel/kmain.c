@@ -18,6 +18,7 @@ void kmain(void) {
     printf("\nhello from kmain!\n");
 
     printf("\nsearching for a free page frame...\n");
+    pmm_free((void *) 0x00FF); // trying to free zero page for testing
     void *mem = pmm_alloc();
     if (mem == NULL)
         printf("not found :-(\n");
