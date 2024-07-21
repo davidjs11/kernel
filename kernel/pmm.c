@@ -15,16 +15,16 @@ struct {
 } pmm;
 
 /* bitmap management */
-inline void pmm_bitmap_set(size_t frame) {
+static inline void pmm_bitmap_set(size_t frame) {
     if (frame > pmm.total_blocks) return;
     pmm.memmap[frame/8] |= (1 << frame%8);
 }
 
-inline void pmm_bitmap_unset(size_t frame) {
+static inline void pmm_bitmap_unset(size_t frame) {
     pmm.memmap[frame/8] &= ~(1 << frame%8);
 }
 
-inline bool pmm_bitmap_test(size_t frame) {
+static inline bool pmm_bitmap_test(size_t frame) {
     if (frame > pmm.total_blocks) return false;
     return pmm.memmap[frame/8] & (1 << frame%8);
 }
@@ -36,12 +36,6 @@ void pmm_init(size_t size, uint8_t *map) {
     pmm.memmap = (uint8_t *) map;
     pmm.total_blocks = pmm.memsize / PAGE_SIZE;
     pmm.used_blocks = pmm.total_blocks;
-
-    // some info
-    printf("\n-- physical memory manager --\n");
-    printf("memory size: %uB\n", size);
-    printf("page frames: %u\n", pmm.memsize / PAGE_SIZE);
-    printf("bitmap size: %u\n", pmm.total_blocks/8);
 
     // set all pages as allocated
     memset(pmm.memmap, 0xFF, pmm.total_blocks/8);
@@ -74,6 +68,22 @@ void pmm_free(void *addr) {
     size_t frame = (size_t) addr / PAGE_SIZE;
     if (0 < frame && frame < pmm.total_blocks) {
         pmm_bitmap_unset(frame);
+        pmm.used_blocks--;
+    }
+}
+
+volatile void pmm_init_reg(uint32_t * base, size_t size) {
+    uint32_t frame = ((size_t) base / PAGE_SIZE);
+    uint32_t blocks = size / PAGE_SIZE;
+
+    // zero page
+    if (frame == 0) {
+        frame++;
+        blocks--;
+    }
+
+    while (blocks--) {
+        pmm_bitmap_unset(frame++);
         pmm.used_blocks--;
     }
 }

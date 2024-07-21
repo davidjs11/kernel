@@ -106,7 +106,7 @@ void tty_newline(tty_t *tty) {
     tty->col = 0;
 
     // if it's the last row
-    if (tty->row > VGA_ROWS) {
+    if (tty->row >= VGA_ROWS) {
         // move everything up
         memmove(tty->buffer, tty->buffer+(VGA_COLS*2),
                 (VGA_ROWS-1)*(VGA_COLS*2));

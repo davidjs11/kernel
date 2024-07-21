@@ -25,10 +25,10 @@ void init_sys(void) {
     idt_init();
 
     // memory map
-    int num = *((int *) 0x8000);
+    int num_regions = *((int *) 0x8000);
     printf("-- memory map --\n");
     size_t total_mem = 0, usable_mem = 0;
-    for (size_t i = 0; i < num; i++) {
+    for (size_t i = 0; i < num_regions; i++) {
         printf("entry %d: ", i);
         smap_entry_t entry;
         entry = *(((smap_entry_t *) 0x8004)+i);
@@ -65,6 +65,19 @@ void init_sys(void) {
     printf("total memory: %dMB (usable: %dMB)\n",
            total_mem/1024/1024, usable_mem/1024/1024);
 
-    /* physical memory */
+    // physical memory
     pmm_init(total_mem, (uint8_t *) &kernel_end);
+    for (size_t i = 0; i < num_regions; i++) {
+        smap_entry_t entry;
+        entry = *(((smap_entry_t *) 0x8004)+i);
+
+        // length
+        uint64_t length = (entry.length_high);
+        length = (length << 32) | entry.length_low;
+
+        if (entry.type == SMAP_ENTRY_USABLE) {
+            printf("initializing region %d\n", i);
+            pmm_init_reg((void *) entry.base_low, length);
+        }
+    }
 }

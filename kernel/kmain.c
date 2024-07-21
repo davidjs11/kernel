@@ -17,12 +17,13 @@ void kmain(void) {
     // print something :-)
     printf("\nhello from kmain!\n");
 
-    printf("\nsearching for a free page frame...\n");
-    pmm_free((void *) 0x00FF); // trying to free zero page for testing
-    void *mem = pmm_alloc();
-    if (mem == NULL)
-        printf("not found :-(\n");
-    else printf("found at address 0x%08x !\n", mem);
+    // request a lot of page frames
+    printf("searching for %u free page frames:\n", 0x800);
+    for (int i = 0; i < 0x800; i++) {
+        char *mem = pmm_alloc();
+        if (!mem) printf("%u: no free page found :-(\n", i);
+        else printf("%u: new free page frame at 0x%08x !\n", i, mem);
+    }
 
     // infinite loooooooooooooop
     while(1);
