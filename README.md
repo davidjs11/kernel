@@ -10,4 +10,5 @@ what has been done for the moment:
     - basic timer driver
     - some C standard library functions (printf()!!!)
     - get the system memory map
+    - physical page frame allocation using bitmap algorithm
 </pre>

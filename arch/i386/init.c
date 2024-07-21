@@ -62,24 +62,25 @@ void init_sys(void) {
         printf("\n");
     }
 
-    printf("total memory: %dMB (usable: %dMB)\n",
-           total_mem/1024/1024, usable_mem/1024/1024);
-
     // physical memory
     size_t pmm_size = pmm_init(total_mem, (uint8_t *) &kernel_end);
     for (size_t i = 0; i < num_regions; i++) {
         smap_entry_t entry;
         entry = *(((smap_entry_t *) 0x8004)+i);
 
-        // length
-        uint64_t length = (entry.length_high);
-        length = (length << 32) | entry.length_low;
-
+        // map only usable entries
         if (entry.type == SMAP_ENTRY_USABLE) {
-            printf("initializing region %d\n", i);
+            // length
+            uint64_t length = (entry.length_high);
+            length = (length << 32) | entry.length_low;
+
+            // align length to page frame size
+            length &= ~(pmm_get_frame_size() - 1);
+
             pmm_init_reg((void *) entry.base_low, length);
         }
     }
+    printf("total memory size: %uMB\n", total_mem/1024/1024);
 
     // alloc kernel and pmm bitmap
     size_t kernel_size = (&kernel_end) - (&kernel_start);
