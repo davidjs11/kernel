@@ -17,13 +17,19 @@ void kmain(void) {
     // print something :-)
     printf("\nhello from kmain!\n");
 
-    // request a lot of page frames
-    printf("searching for %u free page frames:\n", 0x800);
-    for (int i = 0; i < 0x800; i++) {
+    // check if kernel has been allocated
+    printf("is kernel page frame free?...\n");
+    for (int i = 0; i < 0x12; i++) {
         char *mem = pmm_alloc();
-        if (!mem) printf("%u: no free page found :-(\n", i);
-        else printf("%u: new free page frame at 0x%08x !\n", i, mem);
+        printf("%02u: new free page frame at 0x%08x !\n", i, mem);
+
+        // in case that the kernel page frame is available
+        if (mem == (char *) 0x10000) {
+            printf("kernel page was free :-(\n");
+            while(1);
+        }
     }
+    printf("kernel has been allocated correctly!! :-)\n");
 
     // infinite loooooooooooooop
     while(1);

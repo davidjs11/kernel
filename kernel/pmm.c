@@ -30,7 +30,7 @@ static inline bool pmm_bitmap_test(size_t frame) {
 }
 
 extern void *kernel_end;
-void pmm_init(size_t size, uint8_t *map) {
+size_t pmm_init(size_t size, uint8_t *map) {
     // init values for memory manager
     pmm.memsize = size;
     pmm.memmap = (uint8_t *) map;
@@ -39,6 +39,9 @@ void pmm_init(size_t size, uint8_t *map) {
 
     // set all pages as allocated
     memset(pmm.memmap, 0xFF, pmm.total_blocks/8);
+
+    // return size of pmm
+    return pmm.total_blocks / 8;
 }
 
 void *pmm_alloc() {
@@ -72,9 +75,11 @@ void pmm_free(void *addr) {
     }
 }
 
-volatile void pmm_init_reg(uint32_t * base, size_t size) {
+void pmm_init_reg(uint32_t * base, size_t size) {
     uint32_t frame = ((size_t) base / PAGE_SIZE);
     uint32_t blocks = size / PAGE_SIZE;
+
+    printf("init() : frame = 0x%08x , blocks: %u\n", frame, blocks);
 
     // zero page
     if (frame == 0) {
@@ -85,5 +90,16 @@ volatile void pmm_init_reg(uint32_t * base, size_t size) {
     while (blocks--) {
         pmm_bitmap_unset(frame++);
         pmm.used_blocks--;
+    }
+}
+
+void pmm_deinit_reg(uint32_t * base, size_t size) {
+    uint32_t frame = ((size_t) base / PAGE_SIZE);
+    uint32_t blocks = size / PAGE_SIZE;
+    if (blocks == 0) blocks++;
+
+    while (blocks--) {
+        pmm_bitmap_set(frame++);
+        pmm.used_blocks++;
     }
 }

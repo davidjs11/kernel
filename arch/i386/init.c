@@ -17,7 +17,7 @@ const char *smap_entry_types[3] = {
     [SMAP_ENTRY_RESERVED]   = "reserved ",
 };
 
-extern void *kernel_end;
+extern void *kernel_start, *kernel_end;
 void init_sys(void) {
     // interrupts
     pic_remap(0x20, 0x28);
@@ -66,7 +66,7 @@ void init_sys(void) {
            total_mem/1024/1024, usable_mem/1024/1024);
 
     // physical memory
-    pmm_init(total_mem, (uint8_t *) &kernel_end);
+    size_t pmm_size = pmm_init(total_mem, (uint8_t *) &kernel_end);
     for (size_t i = 0; i < num_regions; i++) {
         smap_entry_t entry;
         entry = *(((smap_entry_t *) 0x8004)+i);
@@ -80,4 +80,8 @@ void init_sys(void) {
             pmm_init_reg((void *) entry.base_low, length);
         }
     }
+
+    // alloc kernel and pmm bitmap
+    size_t kernel_size = (&kernel_end) - (&kernel_start);
+    pmm_deinit_reg((uint32_t *) &kernel_start, kernel_size + pmm_size);
 }

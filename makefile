@@ -2,7 +2,6 @@
 
 # --- macros
 # dirs
-# BOOT	= boot
 ARCH	= i386
 ARCHDIR = arch/$(ARCH)
 BOOT	= $(ARCHDIR)/boot
